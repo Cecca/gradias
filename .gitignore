@@ -1,0 +1,12 @@
+.idea
+project/project
+project/target
+target
+\#project.org\#
+.#project.org
+reports
+*.log
+*.pyc
+.idea_modules
+tmp
+.DS_Store

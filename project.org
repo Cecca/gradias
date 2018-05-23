@@ -1,0 +1,545 @@
+* No milestone
+** FEATURE Experiment with alternative graph representations
+** FEATURE Final diameter computation on the GPU.
+
+* Releases
+** DEVELOPMENT Version 0.7.0 [92%]
+*** FEATURE Implement Dijkstra algorithm for APSP
+    - [X] Sequential
+    - [ ] Parallel
+*** DONE Upgrade to Spark 1.0.2
+    CLOSED: [2014-08-08 ven 16:59]
+*** DONE Update copyright
+    CLOSED: [2014-08-08 ven 19:55]
+*** REFACTORED Simplify build
+    CLOSED: [2014-08-08 ven 19:41]
+    Remove unused software sources
+*** FIXED Remove compilation warnings
+    CLOSED: [2014-08-08 ven 23:28]
+    - [X] Feature warnings
+    - [X] Deprecation warnings
+    - [X] Non-exhaustive match warnings
+*** REFACTORED Separate core and benchmaks in different subprojects
+    CLOSED: [2014-08-17 dom 00:09]
+*** REFACTORED Rename GraphForceFunctions._
+    CLOSED: [2014-08-08 ven 22:02]
+    These fuctions are fundamental to the correctness of the
+    algorithm, they are not mere profiling utilities. Hence they
+    should be renamed to something more meaningful. `force` is a good
+    name, since it forces evaluation of lazy RDDs.
+
+    Moreover, the feature should be always enabled, thus the
+    possibility to disable it using the logging level is to be
+    removed.
+*** REFACTORED Revamp CLI and log output
+    CLOSED: [2014-08-09 sab 19:16]
+*** REFACTORED Make DelayedDecomposition use the shrink subroutine
+    CLOSED: [2014-08-12 mar 11:08]
+*** REFACTORED Better result reporting
+    CLOSED: [2014-08-09 sab 17:29]
+    - [X] Remove unneeded results
+    - [X] Remove confusing timing prints
+    - [X] Remove all reports not done with experiment-reporter
+*** REFACTORED Remove unused code
+    CLOSED: [2014-08-10 dom 18:35]
+*** REFACTORED Move the various decomposition strategies to standalone classes
+    CLOSED: [2014-08-11 lun 11:18]
+    Combined with the use of traits, this will reduce code replication.
+*** REFACTORED Change names of algorithms
+    CLOSED: [2014-08-09 sab 19:23]
+    The names should be changed to something like
+    - cluster: This is our algorithm
+    - mpx13: The algorithm from Miller et al. 2013
+** RELEASED Version 0.6.3 [100%]                                     :SODA14:
+   CLOSED: [2014-08-08 ven 16:07]
+   Performance improvements on our decomposition strategy
+   
+   *This is the version used for SODA14*
+
+*** IMPLEMENTED Upgrade to Spark 1.0.0
+    CLOSED: [2014-08-08 ven 16:05]
+    Merge dedicated branch
+*** DONE Remove unused code
+    CLOSED: [2014-04-18 ven 12:18]
+    :PROPERTIES:
+    :GIT-REV:  d4cfc05a473a5dad52c06e3313e4e06b4d540fc3
+    :END:
+**** DONE Remove old ball decomposition
+     CLOSED: [2014-04-18 ven 12:10]
+     The old ball decomposition is no longer used, hence we should
+     remove it to clean up the code a bit.
+**** DONE Refactor ArrayUtils
+     CLOSED: [2014-04-18 ven 12:11]
+     Unused methods should be removed.
+**** DONE Remove toHanfGraph
+     CLOSED: [2014-04-18 ven 12:10]
+*** FIXED [#A] Radius bigger than necessary                       :algorithm:
+    CLOSED: [2014-04-18 ven 15:53]
+    :PROPERTIES:
+    :GIT-REV:  1a2fc691cb3b6b0a3ad96604923e33326e1919c2
+    :END:
+    Currently we do not update edges during shrinking steps. This may
+    lead to centers that touch each other during the shrinking phase
+    to be connected by an edge with a weight bigger than what should
+    be. Investigate!!!
+
+    This bug should trigger a major rewrite of the software, with edge
+    creation done consistently during the entire graph shrinking process.
+*** IMPLEMENTED Report timing percentages
+    CLOSED: [2014-04-18 ven 17:06]
+*** IMPLEMENTED Rewrite graph shrinking procedure
+    CLOSED: [2014-04-18 ven 15:53]
+    :PROPERTIES:
+    :GIT-REV:  1a2fc691cb3b6b0a3ad96604923e33326e1919c2
+    :END:
+    This is both for performance reasons and to fix the
+    [[Radius bigger than necessary]] bug.
+
+    - [X] Make shrinking an explicit static function, instead of one
+      of an implicit object.
+*** IMPLEMENTED Restrict communication in weighted edges creation :performance:
+    CLOSED: [2014-08-08 ven 14:03]
+    :PROPERTIES:
+    :GIT-REV:  a898ac01b9dc3f74eae15e11fdda6730ab16bf12
+    :END:
+    Communication during weighted edges creation is restricted to
+    nodes in the working set only.
+** RELEASED Version 0.6.2 [100%]
+   Features the new Fast Decomposition
+** RELEASED Version 0.6.1 [100%]
+   Implements the Miller algorithm for graph decomposition
+   with exponential delays.
+** RELEASED Version 0.6.0 [100%]
+*** DONE Upgrade to Spark 0.9.0
+*** DONE Perform code cleanup.
+    Remove all previous attempts of ball decomposition.
+*** IMPLEMENTED Implement final version of ball decomposition
+** RELEASED Version 0.5.5 [100%]
+*** IMPLEMENTED Add function to change selection probability at runtime
+*** IMPLEMENTED Implement the new contracting ball decomposition
+** RELEASED Version 0.5.4 [100%]
+*** IMPLEMENTED Implement a center selection strategy based on sample and prune
+*** IMPLEMENTED Rewrite Tool in a more convenient way
+*** IMPLEMENTED Make partitioning optional
+    :LOGBOOK:
+    CLOCK: [2014-01-21 mar 10:09]--[2014-01-21 mar 10:36] =>  0:27
+    :END:
+    :PROPERTIES:
+    :git-hash: 27687e6b2ce40dcf4697ae6ab92226ef9202e109
+    :END:
+*** IMPLEMENTED Register vertices for contracting decomposition with kryo
+    :PROPERTIES:
+    :git-hash: 76a82f7dae9bb720948fea0dbb7b7005b4bf8fbe
+    :END:
+*** IMPLEMENTED Optimize contracting decomposition
+    :LOGBOOK:
+    CLOCK: [2014-01-21 mar 08:36]--[2014-01-21 mar 09:18] =>  0:42
+    :END:
+    :PROPERTIES:
+    :git-hash: 2c13d08380a26d2aadc9a3f14201a616f3888bde
+    :END:
+
+    #+tblname: contracting_dec_benchmark
+    | partitioning | dataset   | decompositionType | processors | p        |  r |  k | t_decomposition | t_diameter | cardinality |    edges | diameter | diameter_approx |
+    |--------------+-----------+-------------------+------------+----------+----+----+-----------------+------------+-------------+----------+----------+-----------------|
+    | no           | dblp.adj  | contracting       |          8 | 0,050000 | 10 |  4 |           14490 |        599 |       15930 |   434699 |        8 |             108 |
+    | yes          | dblp.adj  | contracting       |          8 | 0,050000 | 10 |  4 |           13865 |        452 |       15845 |   437642 |        7 |              97 |
+    | no           | dblp.adj  | contracting       |          8 | 0,050000 | 10 |  8 |           20198 |        778 |       15882 |   790221 |        8 |             108 |
+    | yes          | dblp.adj  | contracting       |          8 | 0,050000 |  9 |  8 |           15978 |        758 |       15661 |   788477 |        6 |              78 |
+    | no           | dblp.adj  | contracting       |          8 | 0,050000 |  8 | 16 |           37329 |        916 |       15886 |  1471554 |        5 |              61 |
+    | yes          | dblp.adj  | contracting       |          8 | 0,050000 | 10 | 16 |           24602 |        740 |       15782 |  1473561 |        5 |              75 |
+    | no           | dblp.adj  | contracting       |          8 | 0,050000 | 10 | 32 |           92622 |        998 |       15715 |  2789209 |        4 |              64 |
+    | yes          | dblp.adj  | contracting       |          8 | 0,050000 |  9 | 32 |           43116 |       2109 |       15666 |  2756612 |        6 |              78 |
+    | no           | orkut.adj | contracting       |         16 | 0.020000 |  5 |  1 |          304762 |      54579 |       60914 | 12420968 |        6 |              46 |
+    | yes          | orkut.adj | contracting       |         16 | 0.020000 |  4 |  1 |          553697 |       6507 |       61123 | 12493980 |        6 |              38 |
+    | no           | orkut.adj | contracting       |         16 | 0.020000 |  4 |  1 |          289395 |      20291 |       60961 | 12413871 |        6 |              38 |
+
+    #+header: :var dat = contracting_dec_benchmark
+    #+begin_src R :results output graphics :file contracting-dec-benchmark.png :exports result
+      require(lattice)
+
+      barchart(t_decomposition ~ factor(partitioning) | factor(k), data=dat,
+               stack=F,
+               horizontal = FALSE)
+    #+end_src
+
+    #+RESULTS:
+    [[file:contracting-dec-benchmark.png]]
+
+*** IMPLEMENTED Add contracting decomposition.
+    - See [[Problem with ball decomposition]]
+** RELEASED Version 0.5.3 [100%]
+*** IMPLEMENTED Add version of the algorithm that expands the radius at maximum
+*** REJECTED Compress color lists in the last step using EliasFano codes
+    :PROPERTIES:
+    :ID:       fff2234a-7c45-4405-81b0-72281268376a
+    :END:
+*** IMPLEMENTED Add EFUtils [2014-01-17 ven]
+*** REJECTED Use Elias Fano lists for colors [2014-01-17 ven]
+    The problem is that it takes too long to compress and decompress them
+
+** RELEASED Version 0.5.2 [100%]
+   :PROPERTIES:
+   :ID:       c088c8c5-b159-4bac-9701-5cba943effb0
+   :END:
+*** FIXED Remove all tests
+    All tests are outdated with the new architecture
+*** FIXED With k=1 the decomposition diameter is greater than the original
+    :PROPERTIES:
+    :ID:       6b9fd6f3-63a7-4895-8ae8-975590d4f8da
+    :END:
+    Solved by implementing a new graph shrinking strategy
+*** IMPLEMENTED Remove unnecessary iteration in ball expansion
+*** DONE Upgrade to spark 0.8.1
+*** IMPLEMENTED Add shuffle file consolidation
+** RELEASED Version 0.5.1 [100%]
+   :LOGBOOK:
+   CLOCK: [2013-12-28 sab 10:59]--[2013-12-28 sab 11:11] =>  0:12
+   :END:
+*** IMPLEMENTED Add more information to the printed table
+    - Approximated diameter
+    - Decomposition type
+*** FIXED Not all vertex classes are registered
+*** FIXED Limited colors expansion does not work
+    In particular when taking random colors from the merged list of colors
+    the second step of centers selection takes a lot of iterations.
+*** DONE [#C] Fix all the code warnings fired by Idea           :refactoring:
+** RELEASED Version 0.5.0 [100%]
+   This is a complete rewrite of the tool
+*** FIXED [#A] A node, when selects colors at random to keep as its own,
+    may remove its own color and hence be no longer a center.
+*** FIXED Use an explicit partitioner before performing join operations
+    The problem here is that, to solve the bug [[Too many open files on shuffle]]
+    we had to remove the explicit partitioning.
+*** FIXED Too many open files on shuffle
+    :LOGBOOK:
+    CLOCK: [2013-12-12 gio 15:14]--[2013-12-12 gio 16:12] =>  0:58
+    CLOCK: [2013-12-12 gio 13:06]--[2013-12-12 gio 14:36] =>  1:30
+    :END:
+    - [2013-12-12 gio 10:00]
+      Add this property: -Dspark.shuffle.consolidateFiles=true
+      From the mailing list:
+      """
+      Now for the caveats. A large number of reducers can actually be just
+      as much an issue as a small number of reducers. If you have N map
+      partitions and R reducers, we create N*R files on disk across the
+      cluster in order to do the group by. Unfortunately, file systems
+      tend to become inefficient at handling very large numbers of
+      files (in the millions). In order to fix this, we have introduced
+      a feature called "shuffle file consolidation" in 0.8.1 and beyond,
+      which produces only C*R files (for C CPUs) rather than N*R.
+      [Due to an issue with the ext3 file system and many-cored systems,
+      however, this feature is turned off by default and must be
+      explicitly enabled as "-Dspark.shuffle.consolidateFiles=true"
+      """
+    - [2013-12-12 gio 13:30]
+      The problem is related to the number of reduce tasks.
+      This is due to the fact that the output of a map task with, say, 16
+      input partitions, can be made up by a bigger number of partitions.
+      Since the number of files opened by a single reduce task is N*R, where
+      N is the number of partitions and R is the number of reducers, the
+      while thing explodes.
+      The solution might be to limit the number of partitions in reduce
+      tasks to the default level of parallelism.
+    - [2013-12-12 gio 16:00]
+      Fixed.
+*** IMPLEMENTED [#C] Switch to Build.scala                            :build:
+    This way we can have a core and a benchmark project, with different
+    dependencies
+*** IMPLEMENTED [#B] Add a configuration object to hold all the configuration
+    :LOGBOOK:
+    CLOCK: [2013-12-07 sab 15:47]--[2013-12-07 sab 16:09] =>  0:22
+    :END:
+*** IMPLEMENTED [#B] Use Elias-Fano coding to represent id lists :performance:
+    :LOGBOOK:
+    CLOCK: [2013-12-12 gio 09:00]--[2013-12-12 gio 11:53] =>  2:53
+    :END:
+    Elias-Fano coding can be used to represent integer nondecreasing lists
+    in a succint way, using only 2+log(u/n) bits, where u is the upper
+    bound of the IDs and n is the number of elements. See [[http://sux4j.dsi.unimi.it/docs/it/unimi/dsi/sux4j/util/EliasFanoMonotoneLongBigList.html][sux4j]].
+*** IMPLEMENTED Refactor the entire codebase [4/4]              :refactoring:
+    :LOGBOOK:
+    CLOCK: [2013-12-11 mer 16:00]--[2013-12-11 mer 17:03] =>  1:03
+    CLOCK: [2013-12-10 mar 10:17]--[2013-12-10 mar 12:37] =>  2:20
+    CLOCK: [2013-12-10 mar 08:30]--[2013-12-10 mar 10:07] =>  1:37
+    CLOCK: [2013-12-09 lun 16:00]--[2013-12-09 lun 17:06] =>  1:06
+    CLOCK: [2013-12-07 sab 17:09]--[2013-12-07 sab 18:20] =>  1:11
+    CLOCK: [2013-12-07 sab 16:09]--[2013-12-07 sab 17:00] =>  0:51
+    :END:
+**** DONE Remove unused old ball decomposition classes
+**** DONE Rewrite the Tool class
+**** DONE Implement a more composable architecture
+     Use traits to specify composable behaviour
+     Implement different traits for each ball decomposition step
+     - [X] Initialization
+     - [X] Centers selection
+     - [X] Missing centers selection
+     - [X] Ball expansion
+     - [X] Graph shrinking
+     - [X] Algorithm finalization
+     - [X] Overall algorithm structure
+**** DONE Add a Vertex class
+     One thing we can do is introduce a new Neighbourhood object, that can
+     be implemented in variuos ways, such as a simple array or as a
+     Elias Fano list. Or, instead of introducing a new class with its overhead,
+     we simply use the Iterable interface
+** RELEASED Version 0.4.3 [100%]
+*** IMPLEMENTED Command line parameter to set the length of lists
+*** IMPLEMENTED Expand the balls using limited-length lists of colors
+    SCHEDULED: <2013-12-05 gio>
+    :LOGBOOK:
+    CLOCK: [2013-12-05 gio 16:01]--[2013-12-05 gio 18:18] =>  2:17
+    CLOCK: [2013-12-05 gio 11:26]--[2013-12-05 gio 11:38] =>  0:12
+    :END:
+    We perform r iterations:
+     - Each node maintains a list of only k colors.
+     - Once a node has filled its list of k colors, it does not accept
+       any more colors.
+     - At the end of the r-th iteration, the entire graph is colored and
+       for each arc we should generate all the pairs that are made up by
+       the colors at each side of the node.
+     - We don't need overlapping zones
+**** Strategies to perform graph shrinking
+     - [ ] Generate all the arcs and use them ask keys for
+       the adjacency lists [2013-12-05 gio 16:56]
+     - [X] Send to each node a list of colors together with the ID
+       of the node. Each node then receives several lists, tagged
+       with the sending ID. Then it can create all the edges
+       correctly. [2013-12-05 gio 18:11]
+
+** RELEASED Version 0.4.2 [100%]
+*** IMPLEMENTED Probability of selection depends on ball cardinality :algorithm:
+    :LOGBOOK:
+    CLOCK: [2013-12-05 gio 11:48]--[2013-12-05 gio 12:10] =>  0:22
+    CLOCK: [2013-11-29 ven 17:46]--[2013-11-29 ven 18:49] =>  1:03
+    :END:
+    The probability of selection for node $i$ is $d_i/\delta$, where
+    \begin{equation}
+    \delta = \frac{2m}{np}
+    \end{equation}
+
+*** IMPLEMENTED [#A] Change strategy of missing center selection  :algorithm:
+    SCHEDULED: <2013-12-05 gio>
+    :LOGBOOK:
+    CLOCK: [2013-12-05 gio 12:13]--[2013-12-05 gio 12:42] =>  0:29
+    CLOCK: [2013-12-05 gio 11:08]--[2013-12-05 gio 11:25] =>  0:17
+    CLOCK: [2013-12-05 gio 08:15]--[2013-12-05 gio 10:42] =>  2:27
+    CLOCK: [2013-12-04 mer 17:43]--[2013-12-04 mer 18:17] =>  0:34
+    :END:
+    Instead of taking all the uncovered nodes as vertices, take only a
+    handful of them at a time possily randomly, until the entire graph
+    is covered.
+*** IMPLEMENTED Rewrite flood ball decomposition      :algorithm:performance:
+    :LOGBOOK:
+    CLOCK: [2013-12-04 mer 15:40]--[2013-12-04 mer 17:43] =>  2:03
+    :END:
+    It is now comprised of the following steps
+
+     1. Center indentification
+     2. Creation of balls of radius r+1
+        1. At the end of iteration k (1 >= k >= r+1) each node v of the original
+           graph has two lists:
+           - L_v(1) = centers at distance k - 1 from v
+           - L_v(2) = centers at distance exactly k from v
+     3. Creation of the adjacency lists of the reduced graph
+        1. Each node v sends L_v(1) to all the centers in L_v(1) U L_v(2)
+        2. Each centers performs the union of the received lists. The result will
+           be its adjacency list.
+** RELEASED Version 0.4.1 [100%]
+*** DONE Rewrite flood ball decomposition             :algorithm:performance:
+    :LOGBOOK:
+    CLOCK: [2013-12-04 mer 14:58]--[2013-12-04 mer 15:35] =>  0:37
+    CLOCK: [2013-12-04 mer 08:00]--[2013-12-04 mer 12:30] =>  4:30
+    :END:
+**** Exchange update lists instead of the whole color list every time
+*** FIXED [#A] Balls that should be adjacent are not              :algorithm:
+    :LOGBOOK:
+    CLOCK: [2013-12-03 mar 13:13]--[2013-12-03 mar 15:02] =>  1:49
+    :END:
+**** DONE Do 2r+1 iterations
+     This is way slower!
+**** DONE Rewrite the shrinkgraph function
+** RELEASED Version 0.4.0 [100%]
+*** DONE Update to spark-0.9.0-incubator-SNAPSHOT
+    :LOGBOOK:
+    CLOCK: [2013-12-02 lun 16:32]--[2013-12-02 lun 18:02] =>  1:30
+    :END:
+*** WONTFIX Crash when using more than 16 processors
+    :LOGBOOK:
+    CLOCK: [2013-12-02 lun 19:36]--[2013-12-02 lun 20:44] =>  1:08
+    CLOCK: [2013-12-02 lun 10:06]--[2013-12-02 lun 13:17] =>  3:11
+    CLOCK: [2013-12-01 dom 19:28]--[2013-12-01 dom 20:11] =>  0:43
+    :END:
+    - [2013-12-03 mar 12:30] this is a system related problem.
+      Using more machine will solve it (hopefully)
+
+    The exception is
+    #+begin_src
+10:06:25.802 [spark-akka.actor.default-dispatcher-5] ERROR o.a.spark.scheduler.local.LocalActor - key not found: 47
+java.util.NoSuchElementException: key not found: 47
+        at scala.collection.MapLike$class.default(MapLike.scala:225) ~[spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at scala.collection.mutable.HashMap.default(HashMap.scala:45) ~[spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at scala.collection.MapLike$class.apply(MapLike.scala:135) ~[spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at scala.collection.mutable.HashMap.apply(HashMap.scala:45) ~[spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at org.apache.spark.scheduler.local.LocalScheduler.statusUpdate(LocalScheduler.scala:261) ~[spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at org.apache.spark.scheduler.local.LocalActor$$anonfun$receive$1.apply(LocalScheduler.scala:59) ~[spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at org.apache.spark.scheduler.local.LocalActor$$anonfun$receive$1.apply(LocalScheduler.scala:54) ~[spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at akka.actor.Actor$class.apply(Actor.scala:318) ~[spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at org.apache.spark.scheduler.local.LocalActor.apply(LocalScheduler.scala:52) ~[spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at akka.actor.ActorCell.invoke(ActorCell.scala:626) [spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at akka.dispatch.Mailbox.run(Mailbox.scala:179) [spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+        at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [spark-graph-assembly-0.3.1-SNAPSHOT.jar:0.3.1-SNAPSHOT]
+10:06:25.804 [spark-akka.actor.default-dispatcher-5] ERROR o.a.spark.scheduler.local.LocalActor - key not found: 29
+    #+end_src
+
+    - [2013-12-02 lun 12:00] There is another exception, saying that the contents of a local
+      directory under tmp cannot be listed. See [[http://programmatica.blogspot.it/2006/09/java-filelistfiles-returns-null-for.html][here]].
+    - [2013-12-02 lun 16:43] This is definetly due to a "too many open files problem".
+      Running the program with spark 0.9.0-incubator-SNAPSHOT throws this exception.
+      #+begin_src
+java.io.FileNotFoundException: /ext/ceccarel/spark-graph/tmp/spark-local-20131202164048-ec30/27/merged_shuffle_7_12_6 (Too many open files)
+        at java.io.FileOutputStream.open(Native Method) ~[na:1.7.0]
+        at java.io.FileOutputStream.<init>(FileOutputStream.java:232) ~[na:1.7.0]
+        at org.apache.spark.storage.DiskBlockObjectWriter.open(BlockObjectWriter.scala:114) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at org.apache.spark.storage.DiskBlockObjectWriter.write(BlockObjectWriter.scala:173) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at org.apache.spark.scheduler.ShuffleMapTask$$anonfun$runTask$1.apply(ShuffleMapTask.scala:162) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at org.apache.spark.scheduler.ShuffleMapTask$$anonfun$runTask$1.apply(ShuffleMapTask.scala:159) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at scala.collection.Iterator$class.foreach(Iterator.scala:772) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at scala.collection.Iterator$$anon$21.foreach(Iterator.scala:437) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:159) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:100) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at org.apache.spark.scheduler.Task.run(Task.scala:53) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at org.apache.spark.executor.Executor$TaskRunner$$anonfun$run$1.apply$mcV$sp(Executor.scala:215) ~[spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at org.apache.spark.deploy.SparkHadoopUtil.runAsUser(SparkHadoopUtil.scala:50) [spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:182) [spark-graph-assembly-0.4.0-SNAPSHOT.jar:0.4.0-SNAPSHOT]
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156) [na:1.7.0]
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:626) [na:1.7.0]
+        at java.lang.Thread.run(Thread.java:804) [na:1.7.0]
+      #+end_src
+
+*** WONTFIX Perform the exchange of colors in r rounds :algorithm:performance:
+    :LOGBOOK:
+    CLOCK: [2013-12-01 dom 18:12]--[2013-12-01 dom 18:16] =>  0:04
+    :END:
+    Instead of sending all the color lists to the nodes in the color list
+    itself, we can simply perform r iterations with the following steps:
+
+     1. Each node sends to all its neighbours the color list
+     2. Each node receives the color lists of all its neighbours and
+        merges them with its own.
+
+    At the end of the r-th iteration we will have that each node has
+    the list of colors of all the nodes at distance r from it. If the
+    node is a center then its ID appears in its own list. Thus the
+    final filtering condition holds as before.
+
+    This not such a good idea: the performance is actually worse
+*** DONE Rewrite HyperANF [7/7]
+    :LOGBOOK:
+    CLOCK: [2013-11-30 sab 10:19]--[2013-11-30 sab 11:34] =>  1:15
+    CLOCK: [2013-11-30 sab 08:56]--[2013-11-30 sab 09:49] =>  0:53
+    CLOCK: [2013-11-30 sab 08:31]--[2013-11-30 sab 08:56] =>  0:25
+    :END:
+**** IMPLEMENTED Use an outer join or =groupBy= to group messages and vertices :performance:
+     In this way we don't need to create the message with the
+     counter for inactive nodes.
+**** IMPLEMENTED Count active nodes without using =filter=      :performance:
+**** IMPLEMENTED Filter active nodes using =active= field       :performance:
+**** IMPLEMENTED Compute current neighbourhood function using a =reduce= :performance:
+**** IMPLEMENTED In each iteration, remove the second =join=    :performance:
+**** IMPLEMENTED Register HyperAnfVertex and HyperAnfMessage to Kryo :performance:
+*** FIXED PropagateColors does not need to return the neighbours :performance:
+*** FIXED [#A] There are more centers than expected
+    :LOGBOOK:
+    CLOCK: [2013-12-01 dom 18:18]--[2013-12-01 dom 19:28] =>  1:10
+    :END:
+    The strange thing is that if we force the intermediate results, then
+    the centers are the expected number.
+*** FIXED Cache reduced graph before hyperANF
+    Otherwise the reduced graph is computed from scratch again
+*** IMPLEMENTED Use combineByKey instead of groupByKey          :performance:
+    :LOGBOOK:
+    CLOCK: [2013-11-29 ven 13:50]--[2013-11-29 ven 14:06] =>  0:16
+    CLOCK: [2013-11-29 ven 11:31]--[2013-11-29 ven 11:44] =>  0:13
+    :END:
+    To reduce shuffle writer: [[http://spark.incubator.apache.org/docs/latest/api/core/index.html#org.apache.spark.rdd.PairRDDFunctions][combineByKey API]]
+    Actually, this worsens performance too
+*** WONTFIX Create pairs instead of arrays in sendColorsToCenters :performance:
+    :LOGBOOK:
+    CLOCK: [2013-11-29 ven 16:20]--[2013-11-29 ven 16:32] =>  0:12
+    CLOCK: [2013-11-29 ven 15:31]--[2013-11-29 ven 16:07] =>  0:36
+    :END:
+    Then we can remove duplicates in partitions
+*** WONTFIX Perform the color sending thing in multiple rounds  :performance:
+    :LOGBOOK:
+    CLOCK: [2013-11-29 ven 14:06]--[2013-11-29 ven 15:07] =>  1:01
+    :END:
+    For instance: instead of involving all the nodes in the computation,
+    we can involve only the ones with id % i = 0, where i is
+    the iteration number.
+*** WONTFIX Perform some reduce work locally on blocks          :performance:
+    :LOGBOOK:
+    CLOCK: [2013-11-29 ven 10:28]--[2013-11-29 ven 11:20] =>  0:52
+    :END:
+    This is to avoid too much network traffic
+    Actually it worsens performance when there are few partitions
+    The change has been reverted, to restore it, go to changeset
+    [[https://github.com/Cecca/spark-graph/commit/cf4f161c1a46d44adcdc80c3642dc2a207ec0a35][cf4f161c1a46d44adcdc80c3642dc2a207ec0a35]]
+*** FIXED Remove the join between graph and colors              :performance:
+    :LOGBOOK:
+    CLOCK: [2013-11-29 ven 15:10]--[2013-11-29 ven 15:24] =>  0:14
+    :END:
+** RELEASED Version 0.3.2 [100%]
+*** IMPLEMENTED Use partitioning in hyperANF                    :performance:
+*** IMPLEMENTED Use codahale metrics for timings
+*** IMPLEMENTED Print information on standard output
+    Some information (diameter, cardinality and timings) is written
+    on standard output to ease automatic parsing
+*** IMPLEMENTED Use mapValues to avoid shuffling on the network :performance:
+    In flood ball decomposition, use mapValues combined with
+    groupByKey to avoid shuffling over the network.
+
+*** FIXED Force graph evaluation before computation
+    This is to avoid the read time from disk to be included in the algorithm
+*** FIXED Remove transpose graph                      :performance:algorithm:
+    We don't need to transpose the graph twice in the randomized
+    ball decomposition, since we deal with undirected graphs only.
+** RELEASED Version 0.3.1 [100%]
+   This release features performance improvements and bug fixes
+*** FIXED [#A] Change implementation of flood ball decomposition  :algorithm:
+    The randomized flood ball decomposition should deal with nodes
+    that are not covered by any center by making themselves centers.
+*** FIXED [#A] Assigment of missing colors makes algorithm fail   :algorithm:
+    The algorithm that assign missing colors fails with the following error:
+
+        java.util.NoSuchElementException: key not found: 32
+
+    Removing the assigment of missing colors makes the entire algorithm work.
+    The problem is in this merge function
+    #+BEGIN_SRC scala
+    def merge(a: (Neighbourhood, ColorList), b: (Neighbourhood, ColorList))
+    : (Neighbourhood, ColorList) = {
+      if (a._1 != b._1)
+        throw new IllegalArgumentException("Neighbourhoods should be equal")
+      else
+        (a._1, merge(a._2, b._2))
+    }
+    #+END_SRC
+
+*** DONE [#B] Use partitioning to improve performance of joins  :performance:
+    The use of an explicit partitioner enables more efficient joins.
+    Explanation of the technique in these [[http://ampcamp.berkeley.edu/wp-content/uploads/2012/06/matei-zaharia-amp-camp-2012-advanced-spark.pdf][slides]].
+*** DONE Refactor flood ball decomposition                      :refactoring:
+    Methods should be smaller
+*** DONE Use mapPartitions                                      :performance:
+
+#+TODO: TODO | DONE
+#+TODO: FEATURE | IMPLEMENTED REJECTED
+#+TODO: REFACTOR | REFACTORED KEPT
+#+TODO: BUG | FIXED WONTFIX
+#+TODO: DEVELOPMENT FREEZE | RELEASED
